@@ -1,0 +1,64 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdbool.h>
+
+#define MAX_MSG_LEN 1024
+#define MAX_MESSAGES 100
+#define MAX_KEYWORDS 10
+
+// Predefined keywords associated with fraud
+const char *fraud_keywords[MAX_KEYWORDS] = {
+    "lottery", "prize", "claim", "urgent", "win", "money", "offer", "free", "credit", "account"
+};
+
+// Function to check if a message contains fraud keywords
+bool is_fraudulent(const char *message) {
+    for (int i = 0; i < MAX_KEYWORDS; i++) {
+        if (strstr(message, fraud_keywords[i]) != NULL) {
+            return true;  // Found a fraud keyword
+        }
+    }
+    return false;
+}
+
+// Function to process messages
+void process_messages(const char messages[MAX_MESSAGES][MAX_MSG_LEN], int message_count) {
+    printf("\n--- Fraud Detection Results ---\n");
+    for (int i = 0; i < message_count; i++) {
+        printf("Message %d: %s\n", i + 1, messages[i]);
+        if (is_fraudulent(messages[i])) {
+            printf("Result: FRAUDULENT\n");
+        } else {
+            printf("Result: LEGITIMATE\n");
+        }
+        printf("-------------------------------\n");
+    }
+}
+
+int main() {
+    char messages[MAX_MESSAGES][MAX_MSG_LEN];
+    int message_count = 0;
+
+    printf("Welcome to Spam Fraud Detection System\n");
+    printf("Enter the number of messages to analyze (max %d): ", MAX_MESSAGES);
+    scanf("%d", &message_count);
+    getchar();  // Consume the newline character
+
+    if (message_count > MAX_MESSAGES) {
+        printf("Error: Maximum message count exceeded.\n");
+        return 1;
+    }
+
+    // Input messages
+    printf("Enter your messages:\n");
+    for (int i = 0; i < message_count; i++) {
+        printf("Message %d: ", i + 1);
+        fgets(messages[i], MAX_MSG_LEN, stdin);
+        messages[i][strcspn(messages[i], "\n")] = 0;  // Remove newline character
+    }
+
+    // Process messages
+    process_messages(messages, message_count);
+
+    return 0;
+}
